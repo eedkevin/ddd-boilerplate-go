@@ -1,0 +1,65 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+
+  rabbitmq:
+    image: rabbitmq:3.9-management-alpine
+    restart: on-failure
+    networks:
+      - app-network
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redis-cluster:
+    image: grokzen/redis-cluster:6.2.0
+    restart: on-failure
+    networks:
+      - app-network
+    ports:
+      - "7000:7000"
+      - "7001:7001"
+      - "7002:7002"
+      - "7003:7003"
+      - "7004:7004"
+      - "7005:7005"
+    environment:
+      CLUSTER_ONLY: 'true'
+      IP: 0.0.0.0
+
+  redis-commander:
+    image: rediscommander/redis-commander
+    restart: on-failure
+    networks:
+      - app-network
+    ports:
+      - "7081:7081"
+    depends_on:
+      - redis-cluster
+    environment:
+      REDIS_HOSTS: local:redis-cluster:7000,local:redis-cluster:7001,local:redis-cluster:7002,local:redis-cluster:7003,local:redis-cluster:7004,local:redis-cluster:7005
+
+  watch-app:
+    image: cosmtrek/air
+    networks:
+      - app-network
+    ports:
+      - "8080:8080"
+    working_dir: /go/src/ddd-boilerplate-go
+    volumes:
+      - .:/go/src/ddd-boilerplate-go
+    command:
+      - -c
+      - .air.toml
+
+networks:
+  app-network:
+    name: app-network

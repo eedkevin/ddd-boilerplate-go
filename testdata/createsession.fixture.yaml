@@ -1,0 +1,27 @@
+- input:
+    data:
+      paticipants:
+        - phone_number: +852893289
+        - phone_number: +852111321
+  expect:
+    error: false
+    data:
+      paticipants:
+        - phone_number: +852893289
+          virtual_number: +852100001
+        - phone_number: +852111321
+          virtual_number: +852100002
+
+- input:
+    data:
+      paticipants:
+        - phone_number: +852893280
+        - phone_number: +852111320
+  expect:
+    error: false
+    data:
+      paticipants:
+        - phone_number: +852893280
+          virtual_number: +852100003
+        - phone_number: +852111320
+          virtual_number: +852100004

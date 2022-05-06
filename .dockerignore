@@ -1,0 +1,12 @@
+.DS_Store
+.vscode/
+.git/
+tmp/
+*log
+*.air.toml
+Makefile
+README.md
+Dockerfile
+docker-compose.yml
+.gitignore
+.pre-commit-config.yaml
